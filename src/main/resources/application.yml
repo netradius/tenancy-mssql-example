@@ -22,8 +22,8 @@ spring:
         default_catalog: mtdemo
         default_schema: dbo
         multiTenancy: DATABASE
-        tenant_identifier_resolver: com.mastercontrol.tenancy.TenantIdentifierResolver
-        multi_tenant_connection_provider: com.mastercontrol.tenancy.TenantConnectionProvider
+        tenant_identifier_resolver: com.netradius.demo.tenancy.TenantIdentifierResolver
+        multi_tenant_connection_provider: com.netradius.demo.tenancy.TenantConnectionProvider
 logging:
   level:
     com.mastercontrol: TRACE
