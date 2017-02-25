@@ -1,0 +1,6 @@
+CREATE TABLE [user] (
+  [id] [UNIQUEIDENTIFIER] NOT NULL,
+  [name] [VARCHAR](30) NOT NULL,
+  CONSTRAINT user_pk PRIMARY KEY (id)
+)
+GO

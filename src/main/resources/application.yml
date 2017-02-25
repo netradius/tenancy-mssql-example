@@ -1,0 +1,29 @@
+server:
+  port: 8443
+  context-path: /
+  use-forward-headers: true
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:sqlserver://127.0.0.0:1433;databaseName=mtdemo;
+    username: mtdemo
+    password: mtdemo
+    max-active: 25
+    min-idle: 5
+    initial-size: 1
+    test-on-borrow: true
+    test-on-return: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+        default_catalog: mtdemo
+        default_schema: dbo
+        multiTenancy: DATABASE
+        tenant_identifier_resolver: com.mastercontrol.tenancy.TenantIdentifierResolver
+        multi_tenant_connection_provider: com.mastercontrol.tenancy.TenantConnectionProvider
+logging:
+  level:
+    com.mastercontrol: TRACE
