@@ -1,4 +1,4 @@
-package com.mastercontrol;
+package com.netradius.demo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
