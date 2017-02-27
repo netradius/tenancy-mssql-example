@@ -1,14 +1,14 @@
 package com.netradius.demo.tenancy;
 
 import com.netradius.demo.spring.SpringHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.UnknownUnwrapTypeException;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * A simple connection provider which uses an existing data source and supports
@@ -17,6 +17,7 @@ import java.sql.SQLException;
  * @author Kevin Hawkins
  * @author Erik R. Jensen
  */
+@Slf4j
 public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 
 	private DataSource dataSource;
@@ -49,6 +50,16 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 		Connection connection = getConnectionInternal();
 		try {
 			connection.createStatement().execute("USE " + s + "");
+			PreparedStatement ps = connection.prepareStatement("SELECT DB_NAME() AS [Current Database];");
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			while (rs.next()) {
+				for (int i = 1; i <= columnsNumber; i++) {
+					String columnValue = rs.getString(i);
+					log.debug("Current database " + columnValue);
+				}
+			}
 		} catch (Exception x) {
 			throw  new HibernateException("Failed to set db to '" + s + "': " + x.getMessage(), x);
 		}

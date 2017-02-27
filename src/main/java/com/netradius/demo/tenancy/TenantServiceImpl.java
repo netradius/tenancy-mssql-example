@@ -23,9 +23,9 @@ import java.util.Set;
 @Slf4j
 public class TenantServiceImpl implements TenantService {
 
-	private static final String EXISTS_QUERY = "SELECT 1 FROM information_schema.schemata WHERE CATALOG_NAME = lower(?)";
-	private static final String LIST_QUERY = "SELECT CATALOG_NAME FROM information_schema.schemata WHERE CATALOG_NAME NOT IN ('information_schema') ORDER BY CATALOG_NAME ";
-	private static final String COUNT_QUERY = "SELECT count(1) FROM information_schema.schemata WHERE CATALOG_NAME NOT IN ('information_schema')";
+	private static final String EXISTS_QUERY = "SELECT 1 FROM sys.databases where name = lower(?)";
+	private static final String LIST_QUERY = "SELECT name FROM sys.databases ORDER BY name ";
+	private static final String COUNT_QUERY = "SELECT count(1) FROM sys.databases";
 
 	@Autowired
 	private DataSource dataSource;

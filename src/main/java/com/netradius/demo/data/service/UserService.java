@@ -10,4 +10,6 @@ import javax.annotation.Nonnull;
 public interface UserService {
 
 	void create(@Nonnull String name);
+
+	String getUsername(@Nonnull String name);
 }

@@ -19,11 +19,13 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServer2012Dialect
-        default_catalog: mtdemo
-        default_schema: dbo
-        multiTenancy: DATABASE
+        multiTenancy: SCHEMA
         tenant_identifier_resolver: com.netradius.demo.tenancy.TenantIdentifierResolver
         multi_tenant_connection_provider: com.netradius.demo.tenancy.TenantConnectionProvider
 logging:
   level:
-    com.mastercontrol: TRACE
+    com.netradius.demo: TRACE
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+security:
+  filter-order: 1

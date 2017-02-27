@@ -15,7 +15,7 @@ import java.util.UUID;
 @Data
 @Accessors(chain = true)
 @Entity
-@Table(name = "user")
+@Table(name = "[user]")
 @EntityListeners({UUIDListener.class})
 public class User implements UUIDIdentified<User> {
 
