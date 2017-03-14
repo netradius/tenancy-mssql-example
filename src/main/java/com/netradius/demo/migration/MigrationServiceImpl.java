@@ -1,15 +1,18 @@
 package com.netradius.demo.migration;
 
 
+import com.netradius.demo.tenancy.TenantHolder;
 import com.netradius.demo.tenancy.TenantService;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -19,6 +22,9 @@ import java.util.List;
 @Slf4j
 public class MigrationServiceImpl implements MigrationService {
 
+	@Value("${default-db}")
+	private String defaultDB;
+
 	@Autowired
 	private Flyway flyway;
 
@@ -27,6 +33,9 @@ public class MigrationServiceImpl implements MigrationService {
 
 	@Autowired
 	private FlywayMigrationStrategy flywayMigrationStrategy;
+
+	@Autowired
+	private DataSource dataSource;
 
 	@Override
 	@PostConstruct
@@ -40,12 +49,14 @@ public class MigrationServiceImpl implements MigrationService {
 		if (tenantService.exists(tenant)) {
 			log.debug("Applying migrations to tenant " + tenant);
 			synchronized (this) { // We can't have threads stepping on one another
+				TenantHolder.set(tenant);
 				try {
-					//tODO adjust this for multiple db
 //					flyway.setSchemas(tenant);
-//					flywayMigrationStrategy.migrate(flyway);
+					flyway.setDataSource(new FlywayDataSource(dataSource));
+					flywayMigrationStrategy.migrate(flyway);
 				} finally {
-					flyway.setSchemas("public");
+					TenantHolder.unset();
+//					flyway.setSchemas("public");
 				}
 			}
 		}

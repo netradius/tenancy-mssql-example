@@ -6,7 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.UnknownUnwrapTypeException;
-
+import org.springframework.beans.factory.annotation.Value;
 import javax.sql.DataSource;
 import java.sql.*;
 
@@ -22,6 +22,9 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 
 	private DataSource dataSource;
 
+	@Value("${default-db}")
+	private String defaultDB;
+
 	private Connection getConnectionInternal() throws SQLException {
 		if (dataSource ==  null) {
 			dataSource = SpringHelper.getBean(DataSource.class);
@@ -32,7 +35,7 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 
 	@Override
 	public Connection getAnyConnection() throws SQLException {
-		return getConnection("mtdemo");
+		return getConnection(defaultDB);
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 		try {
 			connection.createStatement().execute("USE mtdemo");
 		} catch (Exception x) {
-			throw new HibernateException("Failed to reset db to 'mtdemo':" + x.getMessage(), x);
+			throw new HibernateException("Failed to reset db to " + defaultDB + ": " + x.getMessage(), x);
 		}
 		connection.close();
 	}

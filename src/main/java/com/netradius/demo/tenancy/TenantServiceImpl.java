@@ -24,7 +24,7 @@ import java.util.Set;
 public class TenantServiceImpl implements TenantService {
 
 	private static final String EXISTS_QUERY = "SELECT 1 FROM sys.databases where name = lower(?)";
-	private static final String LIST_QUERY = "SELECT name FROM sys.databases ORDER BY name ";
+	private static final String LIST_QUERY = "SELECT name FROM sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb') ORDER BY name";
 	private static final String COUNT_QUERY = "SELECT count(1) FROM sys.databases";
 
 	@Autowired
@@ -32,7 +32,7 @@ public class TenantServiceImpl implements TenantService {
 
 	private Set<String> disallowedTenants = new HashSet<String>() {{
 		add("information_schema");
-		add("public");
+		add("master");
 	}};
 
 	private void checkAllowed(String tenant) {
