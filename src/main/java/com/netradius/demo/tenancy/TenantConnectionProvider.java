@@ -6,7 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.UnknownUnwrapTypeException;
-import org.springframework.beans.factory.annotation.Value;
+
 import javax.sql.DataSource;
 import java.sql.*;
 
@@ -22,9 +22,6 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 
 	private DataSource dataSource;
 
-	@Value("${default-db}")
-	private String defaultDB;
-
 	private Connection getConnectionInternal() throws SQLException {
 		if (dataSource ==  null) {
 			dataSource = SpringHelper.getBean(DataSource.class);
@@ -35,15 +32,15 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 
 	@Override
 	public Connection getAnyConnection() throws SQLException {
-		return getConnection(defaultDB);
+		return getConnection(TenantHolder.get());
 	}
 
 	@Override
 	public void releaseAnyConnection(Connection connection) throws SQLException {
 		try {
-			connection.createStatement().execute("USE mtdemo");
+			connection.createStatement().execute("USE " + TenantHolder.get());
 		} catch (Exception x) {
-			throw new HibernateException("Failed to reset db to " + defaultDB + ": " + x.getMessage(), x);
+			throw new HibernateException("Failed to reset db to " + TenantHolder.get() + ": " + x.getMessage(), x);
 		}
 		connection.close();
 	}
@@ -52,7 +49,7 @@ public class TenantConnectionProvider implements MultiTenantConnectionProvider {
 	public Connection getConnection(String s) throws SQLException {
 		Connection connection = getConnectionInternal();
 		try {
-			connection.createStatement().execute("USE " + s + "");
+			connection.createStatement().execute("USE " + s);
 			PreparedStatement ps = connection.prepareStatement("SELECT DB_NAME() AS [Current Database];");
 			ResultSet rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();

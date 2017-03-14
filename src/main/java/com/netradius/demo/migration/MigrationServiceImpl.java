@@ -1,12 +1,10 @@
 package com.netradius.demo.migration;
 
-
 import com.netradius.demo.tenancy.TenantHolder;
 import com.netradius.demo.tenancy.TenantService;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +19,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class MigrationServiceImpl implements MigrationService {
-
-	@Value("${default-db}")
-	private String defaultDB;
 
 	@Autowired
 	private Flyway flyway;

@@ -11,11 +11,8 @@ import java.sql.*;
 @Slf4j
 public class FlywayDataSource extends DelegatingDataSource {
 
-	private String defaultDB;
-
-	public FlywayDataSource(DataSource targetDataSource, String defaultDB) {
+	public FlywayDataSource(DataSource targetDataSource) {
 		super(targetDataSource);
-		this.defaultDB = defaultDB;
 	}
 
 	@Override
@@ -25,6 +22,6 @@ public class FlywayDataSource extends DelegatingDataSource {
 		if (StringUtils.hasText(s)) {
 			connection.createStatement().execute("USE " + s + "");
 		}
-		return new FlywayConnection(connection, defaultDB);
+		return new FlywayConnection(connection);
 	}
 }

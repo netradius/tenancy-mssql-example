@@ -1,6 +1,6 @@
 package com.netradius.demo.migration;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.netradius.demo.tenancy.TenantHolder;
 import org.springframework.jdbc.datasource.ConnectionProxy;
 
 import java.sql.*;
@@ -8,14 +8,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-
 public class FlywayConnection implements ConnectionProxy {
 
 	private Connection connection;
-	private String defaultDB;
 
-	public FlywayConnection(Connection connection, String defaultDB) {
-		this.defaultDB = defaultDB;
+	public FlywayConnection(Connection connection) {
 		this.connection = connection;
 	}
 
@@ -67,7 +64,7 @@ public class FlywayConnection implements ConnectionProxy {
 	@Override
 	public void close() throws SQLException {
 		// Reset the USE on the connection
-		connection.createStatement().execute("USE " + defaultDB);
+		connection.createStatement().execute("USE " + TenantHolder.get());
 		connection.close();
 	}
 

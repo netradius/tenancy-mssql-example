@@ -11,8 +11,7 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
 
 	@Override
 	public String resolveCurrentTenantIdentifier() {
-		String tenant = TenantHolder.get();
-		return StringUtils.hasText(tenant) ? tenant : "mtdemo";
+		return TenantHolder.get();
 	}
 
 	@Override
